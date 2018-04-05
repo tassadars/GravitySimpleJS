@@ -22,10 +22,10 @@ function startGame() {
 var myGameArea = {
     canvas: document.createElement("canvas"),
     start: function () {
-        this.canvas.width = 640;
+        this.canvas.width = 540;
         this.canvas.height = 480;
         this.context = this.canvas.getContext("2d");
-        document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+        document.getElementById("canvasHolder").appendChild(this.canvas);
         this.interval = setInterval(updateGameArea, 100);
     },
     stop: function () {
