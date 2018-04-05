@@ -2,6 +2,13 @@
 canvas {
     border: 1px solid #d3d3d3;
     background-color: #f1f1f1;
-    /* width: 540px;
-    height: 480px; */
+}
+
+h4 {
+    text-align: center;
+    /* font-weight: bold; */
+}
+
+button#startStop  {
+    width: 160px;
 }
