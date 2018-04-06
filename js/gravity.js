@@ -10,11 +10,11 @@ var da = 0;
 var net = 0;
 
 function startGame() {
-  pieces.push(new component(2500, 5, 5, "green", 180, 120, "static"));
-  //pieces.push(new component(1, 5, 5, "green", 170, 85, "static"));
+  pieces.push(new component(2500, 5, "green", 180, 120, "static"));
+  //pieces.push(new component(1, 5, "green", 170, 85, "static"));
 
-  pieces.push(new component(150, 5, 5, "brown", 150, 75, "", 6, 1));
-  pieces.push(new component(100, 5, 5, "grey", 290, 215, "", 2, -2));
+  pieces.push(new component(150, 5, "brown", 150, 75, "", 6, 1));
+  pieces.push(new component(100, 5, "grey", 290, 215, "", 2, -2));
 
   myGameArea.start();
 }
@@ -49,10 +49,9 @@ var myGameArea = {
   }
 }
 
-function component(mass, width, height, color, x, y, type, speedX = 0, speedY = 0) {
+function component(mass, radius, color, x, y, type, speedX = 0, speedY = 0) {
   this.type = type;
-  this.width = width;
-  this.height = height;
+  this.radius = radius;
   this.x = x;
   this.y = y;
   this.shiftX = 0;
@@ -66,7 +65,10 @@ function component(mass, width, height, color, x, y, type, speedX = 0, speedY = 
   this.update = function () {
     ctx = myGameArea.context;
     ctx.fillStyle = color;
-    ctx.fillRect(this.x, this.y, this.width, this.height);
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, radius, 0, Math.PI * 2, true); // Outer circle
+    ctx.stroke();
+    ctx.fill();
   }
   // this.newPos = function () {
   //     //this.gravitySpeed += this.gravity;
@@ -116,19 +118,6 @@ function component(mass, width, height, color, x, y, type, speedX = 0, speedY = 
         this.shiftX -= pA.x - pC.x;
         this.shiftY -= pA.y - pC.y;
 
-
-        // console.log("GravitySpeed: " + pieces[i].gravitySpeed);
-
-        // console.log("this.x "+ this.x + "; x " + x );
-        // console.log("this.y "+ this.y + "; y " + y );
-
-        //  console.log("Piece "+ i + "; ShiftX " + this.shiftX );
-        //  console.log("Piece "+ i + "; ShiftY " + this.shiftY );
-
-
-        //console.log("Piece "+ i + "; this.x " + this.x + "; x " + x);
-        //console.log("Piece "+ i + "; this.y " + this.y + "; y " + y);
-
         //console.log("da: "+ da++);
       }
       else {
@@ -140,10 +129,6 @@ function component(mass, width, height, color, x, y, type, speedX = 0, speedY = 
 
     this.speedX += this.shiftX;
     this.speedY += this.shiftY;
-
-    console.log("SpeedX: " + this.speedX);
-    console.log("SpeedY: " + this.speedY);
-
 
     this.x += this.speedX;
     this.y += this.speedY;
