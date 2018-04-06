@@ -3,9 +3,6 @@ const startStopBtn = document.querySelector('#startStop');
 document.addEventListener("DOMContentLoaded", startGame);
 startStopBtn.addEventListener("click", startStopGame);
 
-
-var myGamePiece;
-
 var pieces = [];
 
 // debug variables
@@ -13,11 +10,11 @@ var da = 0;
 var net = 0;
 
 function startGame() {
-  pieces.push(new component(5, 5, "green", 180, 120, "static"));
-  //pieces.push(new component(5, 5, "green", 170, 85, "static"));
+  pieces.push(new component(2500, 5, 5, "green", 180, 120, "static"));
+  //pieces.push(new component(1, 5, 5, "green", 170, 85, "static"));
 
-  pieces.push(new component(5, 5, "brown", 150, 75, "", 5, 1));
-  //pieces.push(new component(5, 5, "grey", 290, 215, "", 2, -2));
+  pieces.push(new component(150, 5, 5, "brown", 150, 75, "", 6, 1));
+  pieces.push(new component(100, 5, 5, "grey", 290, 215, "", 2, -2));
 
   myGameArea.start();
 }
@@ -52,7 +49,7 @@ var myGameArea = {
   }
 }
 
-function component(width, height, color, x, y, type, speedX = 0, speedY = 0) {
+function component(mass, width, height, color, x, y, type, speedX = 0, speedY = 0) {
   this.type = type;
   this.width = width;
   this.height = height;
@@ -64,6 +61,7 @@ function component(width, height, color, x, y, type, speedX = 0, speedY = 0) {
   this.speedY = speedY;
   this.gravity = 1;
   this.gravitySpeed = 2;
+  this.mass = mass;
   this.bounce = 0.6;
   this.update = function () {
     ctx = myGameArea.context;
@@ -109,7 +107,8 @@ function component(width, height, color, x, y, type, speedX = 0, speedY = 0) {
         // Yc = Ya + (Yb-Ya)*k
 
         let lengthAB = Math.sqrt(Math.pow(pB.x - pA.x, 2) + (Math.pow(pB.y - pA.y, 2)));
-        let k = pB.gravitySpeed / lengthAB;
+        //let k = pB.gravitySpeed / lengthAB;
+        let k = calcGravityAcceleration(pB.mass, lengthAB) / lengthAB;
 
         pC.x = pA.x + (pB.x - pA.x) * k;
         pC.y = pA.y + (pB.y - pA.y) * k;
@@ -164,6 +163,10 @@ function updateGameArea() {
     pieces[i].update();
   }
 
+}
+
+function calcGravityAcceleration(mass, lengthAB) {
+  return mass/Math.pow(lengthAB, 2);
 }
 
 
