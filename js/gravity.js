@@ -10,11 +10,15 @@ var da = 0;
 var net = 0;
 
 function startGame() {
-  pieces.push(new component(2500, 5, "green", 180, 120, "static"));
+  pieces.push(new component(250, 3, "green", 180, 120, "static"));
   //pieces.push(new component(1, 5, "green", 170, 85, "static"));
 
-  pieces.push(new component(150, 5, "brown", 150, 75, "", 6, 1));
-  pieces.push(new component(100, 5, "grey", 290, 215, "", 2, -2));
+  pieces.push(new component(350, 3, "brown", 150, 75, "", 6, 1));
+  pieces.push(new component(100, 3, "grey", 190, 215, "", 4, -2));
+  pieces.push(new component(100, 3, "grey", 192, 215, "", 4, -2));
+  pieces.push(new component(100, 3, "grey", 194, 215, "", 4, -2));
+  pieces.push(new component(100, 3, "grey", 196, 215, "", 4, -2));
+
 
   myGameArea.start();
 }
@@ -54,6 +58,8 @@ function component(mass, radius, color, x, y, type, speedX = 0, speedY = 0) {
   this.radius = radius;
   this.x = x;
   this.y = y;
+  this.prevX;
+  this.prevY;
   this.shiftX = 0;
   this.shiftY = 0;
   this.speedX = speedX;
@@ -115,9 +121,44 @@ function component(mass, radius, color, x, y, type, speedX = 0, speedY = 0) {
         pC.x = pA.x + (pB.x - pA.x) * k;
         pC.y = pA.y + (pB.y - pA.y) * k;
 
-        this.shiftX -= pA.x - pC.x;
-        this.shiftY -= pA.y - pC.y;
+        // check on bump
+        if (lengthAB <= (pA.radius + pB.radius)) {
 
+
+          // keep/restore distance between pieces
+
+          if (pA.prevX == undefined || pA.prevY == undefined) {
+            if (pA.x < pB.x)
+              pA.x -= pA.radius * (1 + Math.random()/10);
+            else
+              pA.x += pA.radius * (1 + Math.random()/10);
+
+            if (pA.y < pB.y)
+              pA.y -= pA.radius * (1 + Math.random()/10);
+            else
+              pA.y += pA.radius * (1 + Math.random()/10);
+
+          } else { // have previous values
+            pA.x = pA.prevX;
+            pA.y = pA.prevY;
+            continue; // do not process movement
+          }
+
+          // pA == this current point
+          pA.speedX = (pA.mass * pA.speedX + pB.mass * pB.speedX) / (pA.mass + pB.mass);
+          pA.speedY = (pA.mass * pA.speedY + pB.mass * pB.speedY) / (pA.mass + pB.mass);
+
+          // Energy lost during bump, heat generation Koef = 0,7
+
+          pA.speedX *= 0, 7;
+          pA.speedY *= 0, 7;
+
+          console.log("BUMP!!!!!!!!!!!!!!!!!!!!!!");
+        } else {
+
+          this.shiftX -= pA.x - pC.x;
+          this.shiftY -= pA.y - pC.y;
+        }
         //console.log("da: "+ da++);
       }
       else {
@@ -125,10 +166,14 @@ function component(mass, radius, color, x, y, type, speedX = 0, speedY = 0) {
       }
     }
 
-    console.log("-----------------------")
+    //console.log("-----------------------")
 
     this.speedX += this.shiftX;
     this.speedY += this.shiftY;
+
+    // save previous position
+    this.prevX = this.x;
+    this.prevY = this.y;
 
     this.x += this.speedX;
     this.y += this.speedY;
@@ -151,7 +196,7 @@ function updateGameArea() {
 }
 
 function calcGravityAcceleration(mass, lengthAB) {
-  return mass/Math.pow(lengthAB, 2);
+  return mass / Math.pow(lengthAB, 2);
 }
 
 
