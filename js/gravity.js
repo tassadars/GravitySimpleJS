@@ -1,6 +1,8 @@
 const startStopBtn = document.querySelector('#startStop');
 
 document.addEventListener("DOMContentLoaded", startGame);
+document.getElementById("canvasHolder").addEventListener("click", test);
+
 startStopBtn.addEventListener("click", startStopGame);
 
 var pieces = [];
@@ -207,3 +209,9 @@ function calcGravityAcceleration(mass, lengthAB) {
 
 // <p>0 = no bouncing.</p>
 // <p>1 = will bounce all the way back.</p>
+
+function test(e){
+
+  pieces.push(new component(100, 3, "blue", e.offsetX, e.offsetY, "click", 0,0));
+  console.log(e.offsetX + " | " + e.offsetY);
+}
